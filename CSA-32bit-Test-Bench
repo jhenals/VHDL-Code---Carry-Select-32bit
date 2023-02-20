@@ -1,0 +1,33 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+
+entity Sim_CSA32b is
+end Sim_CSA32b;
+
+architecture Behavioral of Sim_CSA32b is
+component CarrySelect32b is
+    Port ( A_cs : in STD_LOGIC_VECTOR (31 downto 0);
+           B_cs : in STD_LOGIC_VECTOR (31 downto 0);
+           Cin_cs: in STD_LOGIC;
+           S_cs : out STD_LOGIC_VECTOR (31 downto 0));
+end component;
+signal IA, IB, Osum : STD_LOGIC_VECTOR(31 downto 0);
+signal Icin : STD_LOGIC;
+
+begin
+    --instantiate the Unit Under Test (UUT)
+   uut: CarrySelect32b port map(IA, IB, Icin, Osum);
+     --simulazione esaustiva  
+    ICin <= '0';
+     CSA: PROCESS BEGIN
+         for i in 1073741820 to 1073741830 loop
+             IA<= CONV_STD_LOGIC_VECTOR(i, 32);
+             for j in 2147483630 to 2147483640 loop
+                 IB<= CONV_STD_LOGIC_VECTOR(j, 32);
+                 wait for 20ns;
+             end loop;
+         end loop;
+     END PROCESS;
+
+end Behavioral;
