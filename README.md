@@ -12,5 +12,5 @@ Si richiede di progettare un sommatore CARRY-SELECT a 32 bit, assumento che gli 
 4. Carry Select a 8 bit
 5. Carry Select a 32 bit
 
-## Schema a blocco del progetto
+## Schema a blochi
 ![image](https://user-images.githubusercontent.com/77573528/220132194-9da3a3ce-a396-42ec-9420-bda245811ab6.png)
