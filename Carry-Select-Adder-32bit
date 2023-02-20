@@ -1,0 +1,41 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity CarrySelect32b is
+    Port ( A_cs : in STD_LOGIC_VECTOR (31 downto 0);
+           B_cs : in STD_LOGIC_VECTOR (31 downto 0);
+           Cin_cs: in STD_LOGIC;
+           S_cs : out STD_LOGIC_VECTOR (31 downto 0));
+end CarrySelect32b;
+
+architecture Behavioral of CarrySelect32b is
+component RippleCarry is 
+     generic(nb:integer:=8);
+     Port ( A : in STD_LOGIC_VECTOR (nb-1 downto 0);
+          B : in STD_LOGIC_VECTOR (nb-1 downto 0);
+          Cin : in STD_LOGIC;
+          S : out STD_LOGIC_VECTOR (nb-1 downto 0);
+          Cout : out STD_LOGIC);
+end component;
+
+component CSA8b is 
+    Port ( Acs : in STD_LOGIC_VECTOR (7 downto 0);
+          Bcs : in STD_LOGIC_VECTOR (7 downto 0);
+          Carry_in : in STD_LOGIC;
+          Scs : out STD_LOGIC_VECTOR (7 downto 0);
+          Carry_out : out STD_LOGIC);
+end component;
+
+signal Cout0, Cout1, Cout2, Cout3 : STD_LOGIC;
+
+begin
+--primo blocco Ripple Carry per 8 bit meno significativi
+RCA: RippleCarry port map ( A_cs(7 downto 0), B_cs(7 downto 0), Cin_cs , S_cs(7 downto 0), Cout0 );
+
+-- blocchi di CSA ad 8 bit : 8x3=24 bit
+CSA1: CSA8b port map (A_cs(15 downto 8), B_cs(15 downto 8), Cout0, S_cs(15 downto 8), Cout1);
+CSA2: CSA8b port map (A_cs(23 downto 16), B_cs(23 downto 16), Cout1, S_cs(23 downto 16), Cout2);
+CSA3: CSA8b port map (A_cs(31 downto 24), B_cs(31 downto 24), Cout2, S_cs(31 downto 24), Cout3);
+
+
+end Behavioral;
