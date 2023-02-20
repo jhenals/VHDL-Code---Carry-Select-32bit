@@ -1,0 +1,44 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity CSA8b is
+    Port ( Acs : in STD_LOGIC_VECTOR (7 downto 0);
+           Bcs : in STD_LOGIC_VECTOR (7 downto 0);
+           Carry_in : in STD_LOGIC;
+           Scs : out STD_LOGIC_VECTOR (7 downto 0);
+           Carry_out : out STD_LOGIC);
+end CSA8b;
+
+architecture Behavioral of CSA8b is
+
+component RippleCarry is
+     generic(nb:integer:=8);
+     Port ( A : in STD_LOGIC_VECTOR (nb-1 downto 0);
+            B : in STD_LOGIC_VECTOR (nb-1 downto 0);
+            Cin : in STD_LOGIC;
+            S : out STD_LOGIC_VECTOR (nb-1 downto 0);
+            Cout : out STD_LOGIC);
+end component;
+
+component Mux is 
+    Port(i0: in STD_LOGIC;
+         i1: in STD_LOGIC;
+         sel: in STD_LOGIC;
+         bitOut:out STD_LOGIC);
+end component;
+
+signal sum1, sum0 : STD_LOGIC_VECTOR(7 downto 0);
+signal carry1, carry0 : STD_LOGIC;
+
+begin
+--definisco i blocchi di RCA a 8 bit
+RCA0: RippleCarry port map (Acs, Bcs, '0', sum0, carry0);
+RCA1: RippleCarry port map (Acs, Bcs, '1', sum1, carry1);
+
+MiniMux: for i in 7 downto 0 generate
+    mux_i: Mux port map ( sum0(i), sum1(i),Carry_in, Scs(i) );
+end generate MiniMux;
+
+Muxf: Mux port map (carry0, carry1, Carry_in, Carry_out);
+
+end Behavioral;
